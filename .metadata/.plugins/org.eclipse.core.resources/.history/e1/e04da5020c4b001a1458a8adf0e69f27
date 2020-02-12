@@ -1,0 +1,119 @@
+package com.capgemini.storesmanagement.dao;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import com.capgemini.storesmanagement.dto.UserDetailsInfo;
+
+public class AdminDaoImpl implements AdminDao {
+	static Logger log=LogManager.getLogger("Admin class");
+	
+
+	Connection con =null;
+	PreparedStatement pstmt=null;
+	ResultSet rs=null;
+
+
+	@Override
+	public UserDetailsInfo loginAdmin(String userId, String password) {
+		return null;
+	}
+
+	@Override
+	public boolean addManufacturer(UserDetailsInfo user) {
+		
+		
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			String dburl = "jdbc:mysql://localhost:3306/stores_management_db";
+			con = DriverManager.getConnection(dburl, "root", "root");
+			String query = "insert into userdetailsinfo values(?,?,?,?,?,?)";
+
+			pstmt = con.prepareStatement(query);
+			pstmt.setInt(1,user.getUserId());
+			pstmt.setString(2, user.getUserName());
+			pstmt.setString(3,user.getEmail());
+			pstmt.setString(4,user.getPassword());
+			pstmt.setString(5,user.getAddress());
+			pstmt.setString(6, user.getUserRole());
+
+			int count = pstmt.executeUpdate();
+			log.info("no of rows affected: " + count);
+
+		} catch (Exception e) {
+			log.info("Exception in login records");
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+
+			} catch (SQLException e) {
+				log.info("Exception in login records 1");
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateManufacturer(UserDetailsInfo userId) {
+		return false;
+	}
+
+	@Override
+	public boolean deleteManufacturer(String userId) {
+
+		try {
+
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+			String dburl = "jdbc:mysql://localhost:3306/stores_management_db";
+			con = DriverManager.getConnection(dburl, "root", "root");
+			String query = "delete from userdetailsinfo where userName=?";
+
+			pstmt = con.prepareStatement(query);
+
+			pstmt.setString(1, userId.getUserName());
+
+
+			int count = pstmt.executeUpdate();
+			log.info("no of rows affected: " + count);
+
+		} catch (Exception e) {
+			log.info("Exception 1");
+		} finally {
+			try {
+				if (con != null) {
+					con.close();
+				}
+				if (pstmt != null) {
+					pstmt.close();
+				}
+
+			} catch (SQLException e) {
+				log.info("Hello Exception");
+			}
+		}
+
+
+
+		return false;
+	}
+
+
+	
+
+}
+
+
+
+
